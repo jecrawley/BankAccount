@@ -41,7 +41,7 @@ public class Account {
 
     }
 
-    //Overloading for the purposed of testing transaction history without random IDs
+    //Overloading for the purpose of testing transaction history without random IDs
     public Account (AccountType type, String name, String id) {
         this.id = id;
         this.type = type;
@@ -50,7 +50,7 @@ public class Account {
     }
 
 
-    boolean isUnusedId (String id) {
+    private boolean isUnusedId (String id) {
         boolean unusedId = false;
 
         if (!(usedIds.contains(id))) {
@@ -133,7 +133,7 @@ public class Account {
 
     boolean transfer (Account receivingAccount, double amount) {
 
-        if (sameOwner(receivingAccount) && exceptions.canCreditAccount(receivingAccount) &&
+        if (isSameOwner(receivingAccount) && exceptions.canCreditAccount(receivingAccount) &&
                 exceptions.canDebitAccount(this, amount, true)) {
 
             receivingAccount.credit(amount);
@@ -155,6 +155,7 @@ public class Account {
     }
 
     double getInterestRate () {
+
         return interest;
     }
 
@@ -183,10 +184,6 @@ public class Account {
         return prevention;
     }
 
-    ArrayList<String> getTransactions (TransactionType transaction) {
-        return null;
-    }
-
     private String generateId (int length) {
         Random random = new Random();
         String randomId = "";
@@ -196,7 +193,7 @@ public class Account {
         return randomId;
     }
 
-    private boolean sameOwner (Account receivingAccount) {
+    private boolean isSameOwner(Account receivingAccount) {
         if (this.name.equals(receivingAccount.getName())) {
 
             return true;

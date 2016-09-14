@@ -7,12 +7,12 @@ import java.util.ArrayList;
  */
 public class Transactions {
 
-    ArrayList<String> withdrawals = new ArrayList<String>();
-    ArrayList<String> deposits = new ArrayList<String>();
-    ArrayList<String> transfers = new ArrayList<String>();
-    ArrayList<String> statusHistory = new ArrayList<String>();
-    ArrayList<String> name = new ArrayList<String>();
-    ArrayList<String> interest = new ArrayList<String>();
+    private ArrayList<String> withdrawals = new ArrayList<String>();
+    private ArrayList<String> deposits = new ArrayList<String>();
+    private ArrayList<String> transfers = new ArrayList<String>();
+    private ArrayList<String> statusHistory = new ArrayList<String>();
+    private ArrayList<String> name = new ArrayList<String>();
+    private ArrayList<String> interest = new ArrayList<String>();
 
     void updateWithdrawals (double amount, String accountId) {
 
