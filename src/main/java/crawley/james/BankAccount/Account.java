@@ -18,20 +18,20 @@ public class Account {
     private Exceptions exceptions = new Exceptions();
     private Transactions transactions = new Transactions();
     private ArrayList<String> usedIds = new ArrayList<String>();
+    private Account autoTransferAccount = null;
 
 
     public Account (AccountType type, String name) {
         String tempId;
 
         this.type = type;
-        while (true) {
+
+        do {
             tempId = generateId(11);
-            if (isUnusedId(tempId)) {
-                id = tempId;
-                usedIds.add(id);
-                break;
-            }
-        }
+        } while (!isUnusedId(tempId));
+
+        id = tempId;
+        usedIds.add(id);
 
         transactions.updateStatusHistory(status, id);
         transactions.updateNameHistory(name, id);
@@ -163,6 +163,7 @@ public class Account {
 
         if (exceptions.canChangeAccountStatus(this, status)) {
 
+            changeOverdraftWhenClosing(status);
             transactions.updateStatusHistory(status, id);
             this.status = status;
 
@@ -176,12 +177,27 @@ public class Account {
 
     void setOverdraftPrevention (OverdraftPrevention prevention) {
 
+
         this.prevention = prevention;
+    }
+
+    //use when setting overdraft prevention to auto transfer
+    void setOverdraftPrevention (Account autoTransferAccount) {
+
+        prevention = OverdraftPrevention.TRANSFER;
+        this.autoTransferAccount = autoTransferAccount;
+
     }
 
     OverdraftPrevention getOverdraftPrevention () {
 
         return prevention;
+    }
+
+    Account getAutoTransferAccount () {
+
+        return autoTransferAccount;
+
     }
 
     private String generateId (int length) {
@@ -209,6 +225,7 @@ public class Account {
         return transactions.requestWithdrawalHistory();
     }
 
+
     String getDepositHistory () {
 
         return transactions.requestDepositHistory();
@@ -232,6 +249,14 @@ public class Account {
     String getInterestHistory () {
 
         return transactions.requestInterestHistory();
+
+    }
+
+    private void changeOverdraftWhenClosing (AccountStatus status) {
+
+        if (status.equals(AccountStatus.CLOSED)) {
+            prevention = OverdraftPrevention.ENABLED;
+        }
 
     }
 }

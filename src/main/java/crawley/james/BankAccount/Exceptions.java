@@ -8,13 +8,18 @@ public class Exceptions {
 
     boolean canDebitAccount (Account account, double amount, boolean isTransfer) {
 
-        if ( isOpen(account.getAccountStatus()) && ( (!isOverdraftPrevented(account) && !isTransfer) || amount <= account.getBalance())) {
+        if ( (isNotOverdraftPrevented(account) && !isTransfer) || amount <= account.getBalance()) {
 
             return true;
+
+        } else  if (hasOverdraftAutoTransfer(account)){
+
+            return account.getAutoTransferAccount().transfer(account, amount - account.getBalance());
 
         } else {
 
             return false;
+
         }
     }
 
@@ -32,8 +37,7 @@ public class Exceptions {
 
     boolean canChangeAccountStatus (Account account, AccountStatus status) {
 
-        if (account.getAccountStatus().equals(AccountStatus.CLOSED)
-                || (status.equals(AccountStatus.CLOSED) && account.getBalance() > 0)) {
+        if (isClosed(account.getAccountStatus()) || (status.equals(AccountStatus.CLOSED) && account.getBalance() != 0)) {
 
             return false;
 
@@ -77,14 +81,20 @@ public class Exceptions {
 
     }
 
-    private boolean isOverdraftPrevented (Account account) {
+    private boolean isNotOverdraftPrevented (Account account) {
 
-        return account.getOverdraftPrevention().equals(OverdraftPrevention.ENABLED);
+        return account.getOverdraftPrevention().equals(OverdraftPrevention.DISABLED);
     }
 
     private boolean isClosed (AccountStatus status) {
 
         return status.equals(AccountStatus.CLOSED);
+    }
+
+    private boolean hasOverdraftAutoTransfer (Account account) {
+
+        return account.getOverdraftPrevention().equals(OverdraftPrevention.TRANSFER);
+
     }
 
 }
