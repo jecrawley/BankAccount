@@ -177,7 +177,7 @@ public class Account {
 
     void setOverdraftPrevention (OverdraftPrevention prevention) {
 
-
+        autoTransferAccount = null;
         this.prevention = prevention;
     }
 
